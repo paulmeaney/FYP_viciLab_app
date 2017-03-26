@@ -220,9 +220,13 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
 
     def write_out_file(self, file_name):
         outfile = open(file_name, "wb")
+        for s in range(0, 22):
+            outfile.write(binascii.unhexlify(self.raw_wave[s]))
         output = self.output_buffer
         for i in range(0, len(output)):
-            outfile.write(binascii.unhexlify(output[i]))
+            frame = output[i];
+            frame = frame[2:] + frame[:2]
+            outfile.write(binascii.unhexlify(frame))
         outfile.close()
 
 
