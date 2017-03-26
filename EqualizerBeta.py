@@ -112,8 +112,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.parent.send_command("clear_reset")
         self.parent.send_command("set 1 ce EQ_top")
         self.parent.send_command("step_clock 1")
-        self.output_buffer = self.write_to_fpga(data)
-        # thread.start_new_thread(self.write_to_fpga, (data,))
+        # self.output_buffer = self.write_to_fpga(data)
+        thread.start_new_thread(self.write_to_fpga, (data,))
 
 
         # self.write_fir(data[0])
@@ -151,7 +151,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.parent.send_command("step_clock 1")
         self.SelectFileLabel.setText("Complete")
         print 'done'
-        return byte_array
+        self.output_buffer = byte_array
         # print self.parent.send_command('read Filter.FIRStage', block=True)['data']
 
 
