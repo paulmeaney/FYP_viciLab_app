@@ -57,7 +57,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         inputFileName = f_name[1]
         self.SelectFileLabel.setText(inputFileName)
         self.raw_wave = self.read_in_file(inputFileName)
-        self.input_data = self.read_in_file(inputFileName)
+        self.input_data = self.read_in_wav_file(inputFileName)
         print "here"
 
     def select_output_file(self):
@@ -132,7 +132,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         byte_array = []
         for i in range (0, len(data)):
             self.write_fir(data[i])
-            print 'input ' + self.parent.send_command('read FIRDatIn', block=True)['data']
+            # print 'input ' + self.parent.send_command('read FIRDatIn', block=True)['data']
             self.parent.send_command("step_clock 1")
             fir_out = self.parent.send_command('read FIRDatOut', block=True)['data']
             if len(fir_out) == 3:
@@ -143,13 +143,14 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
                 fir_out = ''.join('000' + fir_out)
 
             byte_array.append(fir_out)
-            print 'output {}'.format(fir_out)
+            # print 'output {}'.format(fir_out)
         self.parent.send_command("step_clock 1")
         self.parent.send_command("set 0 ce EQ_top")
         self.parent.send_command("assert_reset")
         self.write_fir("0")
         self.parent.send_command("step_clock 1")
         self.SelectFileLabel.setText("Complete")
+        print 'done'
         return byte_array
         # print self.parent.send_command('read Filter.FIRStage', block=True)['data']
 
@@ -185,26 +186,37 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
 
 
     def read_in_wav_file(self, file_name):
-        wfile = wave.open(file_name, 'rb')
-        size = wfile.getnframes();
-        data_array = []
-        for i in range(1, 5):
-            frame = wfile.readframes(1).encode('hex')
-            data_array.append(frame)
-        wfile.close()
-        return data_array
+        f = open(file_name, 'rb')
+        frame = ''
+        output_data = []
+        try:
+            f.seek(44)
+            byte = f.read(1)
+            while byte != '':
+                frame = byte
+                byte = f.read(1)
+                frame = byte + frame
+                output_data.append(frame.encode('hex'))
+                frame = ''
+                byte = f.read(1)
+        finally:
+            f.close()
+            return output_data
+
 
     def read_in_file(self, file_name):
         f = open(file_name, "rb")
-        byte_array = []
+        output_array = []
         try:
-            byte = f.read(2)
-            while byte != "":
-                byte_array.append(str(byte).encode("hex"))
-                byte = f.read(2)
+            frame = f.read(2)
+            print type(frame)
+            print frame
+            while frame != "":
+                output_array.append(str(frame).encode("hex"))
+                frame = f.read(2)
         finally:
             f.close()
-            return byte_array
+            return output_array
 
     def write_out_file(self, file_name):
         outfile = open(file_name, "wb")
