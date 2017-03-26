@@ -1,0 +1,1 @@
+C:\Python27\Scripts\pyside-uic.exe EqualizerBeta_layout.ui -o EqualizerBeta_layout.py
