@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'EqualizerBeta_layout.ui'
 #
-# Created: Sun Mar 26 23:02:42 2017
+# Created: Mon Mar 27 11:14:02 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,10 +50,10 @@ class Ui_EqualizerBeta(object):
         self.SelectFileLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.SelectFileLabel.setObjectName("SelectFileLabel")
         self.controlLayout.addWidget(self.SelectFileLabel)
-        self.progressBar = QtGui.QProgressBar(self.verticalLayoutWidget_2)
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
-        self.controlLayout.addWidget(self.progressBar)
+        self.progressText = QtGui.QLabel(self.verticalLayoutWidget_2)
+        self.progressText.setAlignment(QtCore.Qt.AlignCenter)
+        self.progressText.setObjectName("progressText")
+        self.controlLayout.addWidget(self.progressText)
         self.selectFileButton = QtGui.QPushButton(self.verticalLayoutWidget_2)
         self.selectFileButton.setObjectName("selectFileButton")
         self.controlLayout.addWidget(self.selectFileButton)
@@ -129,6 +129,7 @@ class Ui_EqualizerBeta(object):
         self.output_val.setText(QtGui.QApplication.translate("EqualizerBeta", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
         self.selectOutputButton.setText(QtGui.QApplication.translate("EqualizerBeta", "Select Output File", None, QtGui.QApplication.UnicodeUTF8))
         self.SelectFileLabel.setText(QtGui.QApplication.translate("EqualizerBeta", "Select an audio file", None, QtGui.QApplication.UnicodeUTF8))
+        self.progressText.setText(QtGui.QApplication.translate("EqualizerBeta", "0%", None, QtGui.QApplication.UnicodeUTF8))
         self.selectFileButton.setText(QtGui.QApplication.translate("EqualizerBeta", "Select File", None, QtGui.QApplication.UnicodeUTF8))
         self.startbutton.setText(QtGui.QApplication.translate("EqualizerBeta", "Start Processing", None, QtGui.QApplication.UnicodeUTF8))
         self.title.setText(QtGui.QApplication.translate("EqualizerBeta", "Audio Equaliser", None, QtGui.QApplication.UnicodeUTF8))
