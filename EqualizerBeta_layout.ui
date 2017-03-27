@@ -99,6 +99,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>24</number>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="selectFileButton">
       <property name="text">
        <string>Select File</string>
@@ -201,7 +208,7 @@
      <x>110</x>
      <y>390</y>
      <width>671</width>
-     <height>31</height>
+     <height>32</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">

@@ -20,6 +20,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.output_buffer = []
         self.raw_wave = []
         self.input_data = []
+        self.progress = 0
+        self.lock = threading.Lock()
         self.setup()
 
 
@@ -48,6 +50,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.startbutton.clicked.connect(self.start_process)
         self.resetButton.clicked.connect(self.reset_system)
         self.impulseButton.clicked.connect(self.impulse_response)
+        self.progressBar.hide()
 
     #Fuction to select File
     def select_input_file(self):
@@ -130,6 +133,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
 
     def write_to_fpga(self, data):
         byte_array = []
+        # thread.start_new_thread(self.update_progress, (len(data),))
         for i in range (0, len(data)):
             self.write_fir(data[i])
             # print 'input ' + self.parent.send_command('read FIRDatIn', block=True)['data']
@@ -143,6 +147,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
                 fir_out = ''.join('000' + fir_out)
 
             byte_array.append(fir_out)
+            # self.progress = i
+            # self.update_progress(len(data))
             # print 'output {}'.format(fir_out)
         self.parent.send_command("step_clock 1")
         self.parent.send_command("set 0 ce EQ_top")
@@ -153,6 +159,17 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         print 'done'
         self.output_buffer = byte_array
         # print self.parent.send_command('read Filter.FIRStage', block=True)['data']
+
+    def update_progress(self, length_data):
+        self.progressBar.setMaximum(length_data)
+        self.progressBar.setValue(self.progress)
+
+        while self.progress < length_data-1:
+            self.progressBar.setValue(self.progress)
+            self.progressBar.show()
+            self.progressBar.hide()
+
+
 
 
 

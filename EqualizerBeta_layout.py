@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'EqualizerBeta_layout.ui'
 #
-# Created: Sun Mar 19 19:53:22 2017
+# Created: Sun Mar 26 23:02:42 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,6 +50,10 @@ class Ui_EqualizerBeta(object):
         self.SelectFileLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.SelectFileLabel.setObjectName("SelectFileLabel")
         self.controlLayout.addWidget(self.SelectFileLabel)
+        self.progressBar = QtGui.QProgressBar(self.verticalLayoutWidget_2)
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName("progressBar")
+        self.controlLayout.addWidget(self.progressBar)
         self.selectFileButton = QtGui.QPushButton(self.verticalLayoutWidget_2)
         self.selectFileButton.setObjectName("selectFileButton")
         self.controlLayout.addWidget(self.selectFileButton)
@@ -90,7 +94,7 @@ class Ui_EqualizerBeta(object):
         self.HighFreqButton.setObjectName("HighFreqButton")
         self.horizontalLayout.addWidget(self.HighFreqButton)
         self.horizontalLayoutWidget_2 = QtGui.QWidget(EqualizerBeta)
-        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(110, 390, 671, 31))
+        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(110, 390, 671, 32))
         self.horizontalLayoutWidget_2.setObjectName("horizontalLayoutWidget_2")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
