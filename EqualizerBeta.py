@@ -52,6 +52,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.progressText.hide()
 
     #Fuction to select File
+    # opens file view box and parses in the filename
+    # then calls two different functions to extract the data from the file
     def select_input_file(self):
         self.SelectFileLabel.setText("clicked")
         inputFileName = str(QtGui.QFileDialog.getOpenFileName())
@@ -62,6 +64,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.input_data = self.read_in_wav_file(inputFileName)
         print "here"
 
+
+    # Opens the dialog box to retrieve filename of the write out file
     def select_output_file(self):
         outputFileName = str(QtGui.QFileDialog.getOpenFileName())
         f_name = outputFileName.split('\'')
@@ -107,10 +111,12 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.passThroughButton.setChecked(False)
         self.parent.send_command("set 3 operationSelect EQ_top")
 
+    # This function is called to start the filtering process.
+    # The FPGA write commands are called in a separate thread to prevent the GUI
+    # from stalling.
     def start_process(self):
         data = self.input_data
         self.SelectFileLabel.setText("Running")
-        self.parent.send_command("set {:x} delayVal EQ_top".format(1)) #0.5sec
         self.parent.send_command("clear_reset")
         self.parent.send_command("set 1 ce EQ_top")
         self.parent.send_command("step_clock 1")
@@ -134,24 +140,57 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         byte_array = []
         # thread.start_new_thread(self.update_progress, (len(data),))
         self.progressText.show()
+        data_to_fpga = ""
+        print "length of data is {} samples".format(len(data))
         for i in range (0, len(data)):
-            self.write_fir(data[i])
-            # print 'input ' + self.parent.send_command('read FIRDatIn', block=True)['data']
-            self.parent.send_command("step_clock 1")
-            fir_out = self.parent.send_command('read FIRDatOut', block=True)['data']
-            if len(fir_out) == 3:
-                fir_out = ''.join('0' + fir_out)
-            elif len(fir_out) == 2:
-                fir_out = ''.join('00' + fir_out)
-            elif len(fir_out) == 1:
-                fir_out = ''.join('000' + fir_out)
+            # first concatenate every 7 elements
+            data_to_fpga = data_to_fpga + data[i];
+            if (i + 1) % 7 == 0:
+                print "data in {}".format(data_to_fpga)
+                self.write_fir(data_to_fpga)
+                self.parent.send_command("step_clock 8")
+                fir_out = self.parent.send_command('read DatOut', block=True)['data']
+                if len(fir_out) < 28:
+                    fir_out = ''.join('0'*(28-len(fir_out)) + fir_out)
 
-            byte_array.append(fir_out)
+                print "{} fpga output is {}".format(i, fir_out)
+                # THis line splits the ouput into 16 bit frames
+                output_frames = [fir_out[j:j+4] for j in range(0, len(fir_out), 4)]
+                print "outputframes {}".format(output_frames)
+                for k in range(0, len(output_frames)):
+                    byte_array.append(output_frames[k])
+                data_to_fpga = ""
+
+            # print 'input ' + self.parent.send_command('read FIRDatIn', block=True)['data']
             progress = (i*100)/len(data)
             self.progressText.setText("{}%".format(progress))
             # self.progress = i
             # self.update_progress(len(data))
             # print 'output {}'.format(fir_out)
+# this part deals with the leftover frames if the number of total frames is not a factor of 7
+
+        if len(data) % 7 != 0:
+            r_bit = len(data_to_fpga) - 28
+            data_to_fpga = data_to_fpga + "0"*r_bit;
+            self.write_fir(data_to_fpga);
+            val = len(data_to_fpga)/4;
+            self.parent.send_command("step_clock {}".format(val))
+            fir_out = self.parent.send_command('read DatOut', block=True)['data']
+            if len(fir_out) == 27:
+                fir_out = ''.join('0' + fir_out)
+            elif len(fir_out) == 26:
+                fir_out = ''.join('00' + fir_out)
+            elif len(fir_out) == 23:
+                fir_out = ''.join('000' + fir_out)
+            # THis line splits the ouput into 16 bit frames
+            output_frames = [fir_out[j:j+4] for j in range(0, len(fir_out), 4)]
+            for k in range(0, len(output_frames)):
+                byte_array.append(output_frames[k])
+            data_to_fpga = ""
+
+
+        print "out data is {}".format(byte_array)
+
         self.parent.send_command("step_clock 1")
         self.parent.send_command("set 0 ce EQ_top")
         self.parent.send_command("assert_reset")
@@ -252,7 +291,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         time.sleep(2)
 
     def write_fir(self, val):
-        self.parent.send_command("set " + val + " FIRDatIn EQ_top")
+        self.parent.send_command("set " + val + " DatIn EQ_top")
         self.Input_val.setText(val)
 
     def stop_clock(self):
