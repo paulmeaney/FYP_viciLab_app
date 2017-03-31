@@ -21,6 +21,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.raw_wave = []
         self.input_data = []
         self.lock = threading.Lock()
+        self.filter_layout = ["low", "att"];
         self.setup()
 
 
@@ -47,9 +48,24 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.passThroughButton.clicked.connect(self.pass_through_select)
         self.amplifyButton.clicked.connect(self.amplify_select)
         self.startbutton.clicked.connect(self.start_process)
-        self.resetButton.clicked.connect(self.reset_system)
-        self.impulseButton.clicked.connect(self.impulse_response)
+        # self.resetButton.clicked.connect(self.reset_system)
+        # self.impulseButton.clicked.connect(self.impulse_response)
         self.progressText.hide()
+        self.low_freq_amp_img.hide()
+        self.low_freq_pass_img.hide()
+        self.low_freq_att_img.show()
+        self.mid_freq_amp_img.hide()
+        self.mid_freq_pass_img.show()
+        self.mid_freq_att_img.hide()
+        self.high_freq_amp_img.hide()
+        self.high_freq_pass_img.show()
+        self.high_freq_att_img.hide()
+        self.LowFreqButton.setChecked(True)
+        self.MidFreqButton.setChecked(False)
+        self.HighFreqButton.setChecked(False)
+        self.attenuateButton.setChecked(True)
+        self.passThroughButton.setChecked(False)
+        self.amplifyButton.setChecked(False)
 
     #Fuction to select File
     # opens file view box and parses in the filename
@@ -78,38 +94,106 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.LowFreqButton.setChecked(True)
         self.MidFreqButton.setChecked(False)
         self.HighFreqButton.setChecked(False)
-
+        self.filter_layout[0] = "low"
+        self.set_freq_graphic()
         self.parent.send_command("set 0 frequencySelect EQ_top ")
 
     def mid_freq_select(self):
         self.MidFreqButton.setChecked(True)
         self.LowFreqButton.setChecked(False)
         self.HighFreqButton.setChecked(False)
+        self.filter_layout[0] = "mid"
+        self.set_freq_graphic()
         self.parent.send_command("set 1 frequencySelect EQ_top ")
+
 
     def high_freq_select(self):
         self.HighFreqButton.setChecked(True)
         self.MidFreqButton.setChecked(False)
         self.LowFreqButton.setChecked(False)
+        self.filter_layout[0] = "high"
+        self.set_freq_graphic()
         self.parent.send_command("set 3 frequencySelect EQ_top")
 
     def attenuate_select(self):
         self.attenuateButton.setChecked(True)
         self.passThroughButton.setChecked(False)
         self.amplifyButton.setChecked(False)
+        self.filter_layout[1] = "att"
+        self.set_freq_graphic()
         self.parent.send_command("set 0 operationSelect EQ_top")
 
     def pass_through_select(self):
         self.passThroughButton.setChecked(True)
         self.attenuateButton.setChecked(False)
         self.amplifyButton.setChecked(False)
+        self.filter_layout[1] = "pass"
+        self.set_freq_graphic()
         self.parent.send_command("set 1 operationSelect EQ_top")
 
     def amplify_select(self):
         self.amplifyButton.setChecked(True)
         self.attenuateButton.setChecked(False)
         self.passThroughButton.setChecked(False)
+        self.filter_layout[1] = "amp"
+        self.set_freq_graphic()
         self.parent.send_command("set 3 operationSelect EQ_top")
+
+    def set_freq_graphic(self):
+        self.low_freq_amp_img.hide()
+        self.low_freq_pass_img.hide()
+        self.low_freq_att_img.hide()
+        self.mid_freq_amp_img.hide()
+        self.mid_freq_pass_img.hide()
+        self.mid_freq_att_img.hide()
+        self.high_freq_amp_img.hide()
+        self.high_freq_pass_img.hide()
+        self.high_freq_att_img.hide()
+        if self.filter_layout == ["low", "att"]:
+            self.low_freq_att_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["low", "pass"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["low", "amp"]:
+            self.low_freq_amp_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_pass_img.show()
+        elif self.filter_layout == ["mid", "att"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_att_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["mid", "pass"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["mid", "amp"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_amp_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["high", "att"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_att_img.show()
+
+        elif self.filter_layout == ["high", "pass"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_pass_img.show()
+
+        elif self.filter_layout == ["high", "amp"]:
+            self.low_freq_pass_img.show()
+            self.mid_freq_pass_img.show()
+            self.high_freq_amp_img.show()
+
+
 
     # This function is called to start the filtering process.
     # The FPGA write commands are called in a separate thread to prevent the GUI
@@ -146,17 +230,18 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
             # first concatenate every 7 elements
             data_to_fpga = data_to_fpga + data[i];
             if (i + 1) % 7 == 0:
-                print "data in {}".format(data_to_fpga)
+                # print "data in {}".format(data_to_fpga)
                 self.write_fir(data_to_fpga)
                 self.parent.send_command("step_clock 8")
                 fir_out = self.parent.send_command('read DatOut', block=True)['data']
+                self.output_val.setText("{}".format(fir_out))
                 if len(fir_out) < 28:
                     fir_out = ''.join('0'*(28-len(fir_out)) + fir_out)
 
-                print "{} fpga output is {}".format(i, fir_out)
+                # print "{} fpga output is {}".format(i, fir_out)
                 # THis line splits the ouput into 16 bit frames
                 output_frames = [fir_out[j:j+4] for j in range(0, len(fir_out), 4)]
-                print "outputframes {}".format(output_frames)
+                # print "outputframes {}".format(output_frames)
                 for k in range(0, len(output_frames)):
                     byte_array.append(output_frames[k])
                 data_to_fpga = ""
@@ -176,6 +261,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
             val = len(data_to_fpga)/4;
             self.parent.send_command("step_clock {}".format(val))
             fir_out = self.parent.send_command('read DatOut', block=True)['data']
+            self.output_val.setText("{}".format(fir_out))
             if len(fir_out) == 27:
                 fir_out = ''.join('0' + fir_out)
             elif len(fir_out) == 26:
@@ -189,7 +275,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
             data_to_fpga = ""
 
 
-        print "out data is {}".format(byte_array)
+        # print "out data is {}".format(byte_array)
 
         self.parent.send_command("step_clock 1")
         self.parent.send_command("set 0 ce EQ_top")
@@ -281,6 +367,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
             frame = frame[2:] + frame[:2]
             outfile.write(binascii.unhexlify(frame))
         outfile.close()
+        print "File written to {}".format(outfile)
+        self.output_val.setText("File Written Successfully")
 
 
     def hex_to_string(self, hex_val):
@@ -298,11 +386,11 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.parent.send_command("stop_clock")
         self.SelectFileLabel.setText("Complete")
 
-    def reset_system(self):
-        self.parent.send_command("assert_reset")
-        threading.Timer(0.5, self.parent.send_command, ["clear_reset"]).start()
-        self.parent.send_command("clear_reset")
-        self.write_fir("0000")
+    # def reset_system(self):
+    #     self.parent.send_command("assert_reset")
+    #     threading.Timer(0.5, self.parent.send_command, ["clear_reset"]).start()
+    #     self.parent.send_command("clear_reset")
+    #     self.write_fir("0000")
 
     def close(self):
         self.fpga = None

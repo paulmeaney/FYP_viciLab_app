@@ -16,10 +16,10 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>470</x>
-     <y>130</y>
-     <width>221</width>
-     <height>119</height>
+     <x>380</x>
+     <y>80</y>
+     <width>211</width>
+     <height>153</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="outputLayout">
@@ -76,15 +76,22 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="writeFileButton">
+      <property name="text">
+       <string>Write to File</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>110</y>
-     <width>261</width>
-     <height>151</height>
+     <x>90</x>
+     <y>100</y>
+     <width>241</width>
+     <height>131</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="controlLayout">
@@ -130,16 +137,22 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>10</y>
+     <x>40</x>
+     <y>0</y>
      <width>571</width>
      <height>101</height>
     </rect>
    </property>
+   <property name="minimumSize">
+    <size>
+     <width>571</width>
+     <height>101</height>
+    </size>
+   </property>
    <property name="font">
     <font>
      <family>Helvetica</family>
-     <pointsize>37</pointsize>
+     <pointsize>47</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
@@ -164,8 +177,8 @@
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>300</y>
-     <width>671</width>
+     <y>250</y>
+     <width>501</width>
      <height>32</height>
     </rect>
    </property>
@@ -205,12 +218,108 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="high_freq_amp_img">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>340</y>
+     <width>41</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/amplified_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="mid_freq_amp_img">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>340</y>
+     <width>41</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/amplified_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="low_freq_amp_img">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>340</y>
+     <width>41</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/amplified_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="low_freq_pass_img">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>330</y>
+     <width>41</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/pass_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="high_freq_pass_img">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>330</y>
+     <width>41</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/pass_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="mid_freq_pass_img">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>330</y>
+     <width>41</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/pass_freq.png</pixmap>
+   </property>
+  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>340</y>
-     <width>671</width>
+     <y>290</y>
+     <width>501</width>
      <height>32</height>
     </rect>
    </property>
@@ -246,6 +355,115 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="low_freq_att_img">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>340</y>
+     <width>41</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/attenuate_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="high_freq_att_img">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>340</y>
+     <width>41</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/attenuate_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="mid_freq_att_img">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>340</y>
+     <width>41</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/attenuate_freq.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>350</y>
+     <width>71</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>71</width>
+     <height>71</height>
+    </size>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../EQ drawings/equalizer (1).png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>440</y>
+     <width>56</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Low</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>440</y>
+     <width>56</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Mid</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>440</y>
+     <width>31</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>High</string>
+   </property>
   </widget>
  </widget>
  <resources/>
