@@ -1,8 +1,17 @@
+######################################
+# Paul Meaney
+# FYP
+# NUIG
+# Electronic and Computer Engineering
+# 2017
+# paulmeaney1@gmail.com
+#####################################
+
 import logging
 import time
 import threading
 import thread
-import wave
+# import wave #not supported by vicilab - also not used in this code
 import binascii
 from EqualizerBeta_layout import Ui_EqualizerBeta
 from PySide import QtGui, QtCore
@@ -79,7 +88,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         self.SelectFileLabel.setText(inputFileName)
         self.raw_wave = self.read_in_file(inputFileName)
         self.input_data = self.read_in_wav_file(inputFileName)
-        print "here"
+        # print "here"
 
 
     # Opens the dialog box to retrieve filename of the write out file
