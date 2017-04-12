@@ -36,7 +36,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
 
     def unbundle_data(self, data):
         pass
-
+# This function is called when the GUI opens first time
+# All the graphical elements are wired up to functions
     def setup(self):
         Ui_EqualizerBeta.setupUi(self, self.widget)
         self.selectFileButton.clicked.connect(self.select_input_file)
@@ -215,7 +216,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         #     time.sleep(1)
         # self.stop_clock()
 
-        # was creating a new thread for each write - caused massive pressure in system
+        # was creating a new thread for each write - caused massive pressure in system lead to crashing
         #     threading.Timer(i, self.write_fir, [data[i]]).start()
         #
         # threading.Timer(len(data) + 1, self.stop_clock, []).start()
@@ -295,34 +296,36 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
 
 
 
+# Unused function - original used to trigger an impulse_response
+# Left in so you can see examples of other functions being used as guidance
+    # def impulse_response(self):
+    #     self.parent.send_command("set 17D7840 delayVal EQ_top") #1sec
+    #     self.parent.send_command("clear_reset")
+    #     self.parent.send_command("set 1 ce EQ_top")
+    #     self.parent.send_command("set 0001 FIRDatIn EQ_top")
+    #     self.Input_val.setText("0001")
+    #     self.parent.send_command("start_clock")
+    #
+    #
+    #
+    #     # threading.Timer(15, self.stop_clock, []).start()
+    #     #
+    #     # threading.Timer(1.5, self.write_fir, ["00"]).start()
+    #
+    #     """
+    #     self.process = Timer(15.0, self.stop_clock())
+    #     self.process.start()
+    #     self.t = Timer(3.0, self.write_fir("00"))
+    #     self.t.start()
+    #     """
+    #     #self.delay()
+    #     #self.parent.send_command("set 00 FIRDatIn FIRFilter4Tap")
+    #     #self.Input_val.setText("00")
+    #     #time.sleep(10)
 
-    def impulse_response(self):
-        self.parent.send_command("set 17D7840 delayVal EQ_top") #1sec
-        self.parent.send_command("clear_reset")
-        self.parent.send_command("set 1 ce EQ_top")
-        self.parent.send_command("set 0001 FIRDatIn EQ_top")
-        self.Input_val.setText("0001")
-        self.parent.send_command("start_clock")
 
-
-
-        # threading.Timer(15, self.stop_clock, []).start()
-        #
-        # threading.Timer(1.5, self.write_fir, ["00"]).start()
-
-        """
-        self.process = Timer(15.0, self.stop_clock())
-        self.process.start()
-        self.t = Timer(3.0, self.write_fir("00"))
-        self.t.start()
-        """
-        #self.delay()
-        #self.parent.send_command("set 00 FIRDatIn FIRFilter4Tap")
-        #self.Input_val.setText("00")
-        #time.sleep(10)
-
-
-
+# read in wave file
+# skip header then reverse bytes in every 16bit frame (little endian byte ordering)
 
     def read_in_wav_file(self, file_name):
         f = open(file_name, 'rb')
@@ -342,7 +345,8 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
             f.close()
             return output_data
 
-
+# This function reads in the full file header and data, no reording
+# Can be used to read in data files not in wav format
     def read_in_file(self, file_name):
         f = open(file_name, "rb")
         output_array = []
@@ -356,7 +360,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         finally:
             f.close()
             return output_array
-
+# THis function writes data to wave file, reorders 16 bit frame to little endian byte order
     def write_out_file(self, file_name):
         outfile = open(file_name, "wb")
         for s in range(0, 22):
@@ -370,7 +374,7 @@ class EqualizerBeta(Ui_EqualizerBeta, QtCore.QObject):
         print "File written to {}".format(outfile)
         self.output_val.setText("File Written Successfully")
 
-
+# Converts a hex value to a string
     def hex_to_string(self, hex_val):
         string = str(hex_val).encode("hex")
         return string
@@ -413,6 +417,8 @@ class RunnableEqualizerBeta(EqualizerBeta):
         values is a dictionary with the keys in the form:
         component.signal_name
         """
+        # was originally reading values from here.
+        # values are only updated periodically
         # firout = values["EQ_top.FIRDatOut"]
         # self.update_output(firout)
         # activate = values["EQ_top.activate"]
